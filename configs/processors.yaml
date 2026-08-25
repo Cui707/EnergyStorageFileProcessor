@@ -1,0 +1,43 @@
+processors:
+  extractor:
+    # 文件名匹配规则
+    filename_patterns:
+      - "*bms*"
+      - "*BMS*"
+    
+    # 列名匹配规则
+    column_patterns:
+      time: "(?i)occur.*time|timestamp|time"
+      voltage: "(?i)max.*u|min.*u|voltage"
+      temperature: "(?i)max.*t|min.*t|temp|temperature"
+      current: "(?i)current"
+      charge: "(?i)charge|totalcharge"
+      discharge: "(?i)discharge|totaldischarge"
+  
+  calculator:
+    # 系统电压计算
+    system_voltage:
+      max: true
+      min: true
+      diff: true
+      diff_multiplier: 1000  # 电压差乘数，如mV转换
+    
+    # 系统温度计算
+    system_temperature:
+      max: true
+    
+    # 能量计算
+    energy_balance:
+      charge: true
+      discharge: true
+      # 日能量计算（首尾差值）
+      daily_calculation: true
+    
+    # 插入位置规则
+    insertion_rules:
+      sys_max_u_after: "maxU"
+      sys_min_u_after: "minU"
+      max_diff_after: "sysMinU"
+      sys_max_t_after: "maxT"
+      day_charge_after: "charge"
+      day_discharge_after: "discharge"

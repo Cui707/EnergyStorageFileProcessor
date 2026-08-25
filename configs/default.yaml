@@ -1,0 +1,51 @@
+# 数据格式配置
+data_format:
+  time_columns:
+    - occurTime
+    - timestamp
+    - time
+  voltage_columns:
+    - maxU
+    - minU
+    - voltage
+    - voltage_
+  temperature_columns:
+    - maxT
+    - minT
+    - temp
+    - temperature
+  current_columns:
+    - current
+    - current_
+  charge_columns:
+    - charge
+    - totalChargeKwh
+    - charge_
+  discharge_columns:
+    - discharge
+    - totalDischargeKwh
+    - discharge_
+
+# 计算规则配置
+calculation_rules:
+  system_voltage:
+    max: true
+    min: true
+    diff: true
+  system_temperature:
+    max: true
+  energy_balance:
+    charge: true
+    discharge: true
+
+# 并行处理配置
+parallel_settings:
+  max_workers: 4
+  chunk_size: 1000
+  enable_multiprocessing: false
+
+# 输出配置
+output_settings:
+  format: excel
+  filename: "Processed_Data"
+  highlight_calculated: true

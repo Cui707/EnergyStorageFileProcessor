@@ -1,0 +1,115 @@
+# Generic configuration for battery systems
+# This configuration can be adapted for various battery systems
+
+# Data format configuration
+data_format:
+  time_columns:
+    - timestamp
+    - time
+    - datetime
+    - occurTime
+  voltage_columns:
+    - voltage
+    - volt
+    - maxU
+    - minU
+    - u
+    - v
+  temperature_columns:
+    - temperature
+    - temp
+    - maxT
+    - minT
+    - t
+  current_columns:
+    - current
+    - i
+    - amp
+    - a
+  charge_columns:
+    - charge
+    - total_charge
+    - charge_kwh
+    - energy_charge
+  discharge_columns:
+    - discharge
+    - total_discharge
+    - discharge_kwh
+    - energy_discharge
+
+# Calculation rules configuration
+calculation_rules:
+  system_voltage:
+    max: true
+    min: true
+    diff: true
+    diff_multiplier: 1000  # Convert V to mV
+  system_temperature:
+    max: true
+    min: false  # Set to false if not needed
+  energy_balance:
+    charge: true
+    discharge: true
+    daily_calculation: true
+
+# Parallel processing configuration
+parallel_settings:
+  max_workers: 4
+  chunk_size: 1000
+  enable_multiprocessing: false
+
+# Output configuration
+output_settings:
+  format: excel
+  filename: "Processed_Data"
+  highlight_calculated: true
+
+# Reader configuration
+readers:
+  csv:
+    encoding: utf-8
+    delimiter: ","
+    skip_rows: 0
+    header_row: 0
+  excel:
+    sheet_name: 0
+    header_row: 0
+    skip_rows: 0
+
+# Processor configuration
+processors:
+  extractor:
+    filename_patterns:
+      - "*bms*"
+      - "*BMS*"
+      - "*cluster*"
+      - "*battery*"
+      - "*cell*"
+    column_patterns:
+      time: "(?i)timestamp|time|datetime|occur.*time"
+      voltage: "(?i)voltage|volt|max.*u|min.*u|u|v"
+      temperature: "(?i)temperature|temp|max.*t|min.*t|t"
+      current: "(?i)current|i|amp|a"
+      charge: "(?i)charge|total.*charge|energy.*charge|charge_kwh"
+      discharge: "(?i)discharge|total.*discharge|energy.*discharge|discharge_kwh"
+  
+  calculator:
+    system_voltage:
+      max: true
+      min: true
+      diff: true
+      diff_multiplier: 1000
+    system_temperature:
+      max: true
+      min: false
+    energy_balance:
+      charge: true
+      discharge: true
+      daily_calculation: true
+    insertion_rules:
+      sys_max_u_after: "maxU"
+      sys_min_u_after: "minU"
+      max_diff_after: "sysMinU"
+      sys_max_t_after: "maxT"
+      day_charge_after: "charge"
+      day_discharge_after: "discharge"

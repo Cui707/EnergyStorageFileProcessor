@@ -1,0 +1,107 @@
+# Example configuration for EVE2502 battery system
+# This configuration is based on the original EVE2502 system requirements
+
+# Data format configuration
+data_format:
+  time_columns:
+    - occurTime
+    - timestamp
+    - time
+  voltage_columns:
+    - maxU
+    - minU
+    - voltage
+    - voltage_
+  temperature_columns:
+    - maxT
+    - minT
+    - temp
+    - temperature
+  current_columns:
+    - current
+    - current_
+    - i_
+  charge_columns:
+    - charge
+    - totalChargeKwh
+    - totalcharge_
+    - thisChargeKwh
+    - thislChargeKwh
+  discharge_columns:
+    - discharge
+    - totalDischargeKwh
+    - totaldischarge_
+    - thisDischargeKwh
+
+# Calculation rules configuration
+calculation_rules:
+  system_voltage:
+    max: true
+    min: true
+    diff: true
+    diff_multiplier: 1000  # Convert V to mV
+  system_temperature:
+    max: true
+  energy_balance:
+    charge: true
+    discharge: true
+    daily_calculation: true
+
+# Parallel processing configuration
+parallel_settings:
+  max_workers: 4
+  chunk_size: 1000
+  enable_multiprocessing: false
+
+# Output configuration
+output_settings:
+  format: excel
+  filename: "SystemData"
+  highlight_calculated: true
+
+# Reader configuration
+readers:
+  csv:
+    encoding: utf-8
+    delimiter: ","
+    skip_rows: 0
+    header_row: 0
+  excel:
+    sheet_name: 0
+    header_row: 0
+    skip_rows: 0
+
+# Processor configuration
+processors:
+  extractor:
+    filename_patterns:
+      - "*bms*"
+      - "*BMS*"
+      - "*cluster*"
+    column_patterns:
+      time: "(?i)occur.*time|timestamp|time"
+      voltage: "(?i)max.*u|min.*u|voltage|volt"
+      temperature: "(?i)max.*t|min.*t|temp|temperature"
+      current: "(?i)current|i|amp"
+      charge: "(?i)charge|totalcharge|thischarge"
+      discharge: "(?i)discharge|totaldischarge|thisdischarge"
+  
+  calculator:
+    system_voltage:
+      max: true
+      min: true
+      diff: true
+      diff_multiplier: 1000
+    system_temperature:
+      max: true
+    energy_balance:
+      charge: true
+      discharge: true
+      daily_calculation: true
+    insertion_rules:
+      sys_max_u_after: "maxU"
+      sys_min_u_after: "minU"
+      max_diff_after: "sysMinU"
+      sys_max_t_after: "maxT"
+      day_charge_after: "charge"
+      day_discharge_after: "discharge"

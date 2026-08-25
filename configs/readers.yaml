@@ -1,0 +1,11 @@
+readers:
+  csv:
+    encoding: utf-8
+    delimiter: ","
+    skip_rows: 0
+    header_row: 0
+    
+  excel:
+    sheet_name: 0
+    header_row: 0
+    skip_rows: 0
